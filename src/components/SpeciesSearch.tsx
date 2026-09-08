@@ -1,3 +1,5 @@
+import searchSpecies from "../api/gbif"
+
 function SpeciesSearch() {
 	return (
 		<form onSubmit={handleSearch}>
@@ -8,14 +10,15 @@ function SpeciesSearch() {
 	)
 }
 
-function handleSearch(event: React.SubmitEvent<HTMLFormElement>) {
+async function handleSearch(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
     const input = form.elements.namedItem('species-search') as HTMLInputElement
     const query = input.value.trim()
     if (query) {
         console.log(`Searching for species: ${query}`)
-        // Here you would typically make an API call to fetch species data
+        const data = await searchSpecies(query)
+        console.log('Search results:', data)
     }
 }
 
