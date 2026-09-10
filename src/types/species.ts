@@ -1,3 +1,22 @@
+export type GbifSpeciesMatchResponse = { 
+  additionalStatus?: {
+    status: string,
+  }[],
+
+  classification: Taxon[],
+
+  diagnostics: { 
+    confidence: number, 
+    matchType: string 
+  },
+
+  usage: {
+    canonicalName: string,
+    key: string,
+    rank: string,
+  },
+}
+
 export type Species = {
   canonicalName: string
   key: string
