@@ -1,6 +1,7 @@
 import { useState } from "react";
 import searchSpecies from "../api/gbif";
 import type { Species } from "../types/species";
+import SpeciesCard from "./SpeciesCard";
 
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
@@ -26,7 +27,7 @@ function SpeciesSearch() {
         <button type="submit">Search</button>
       </form>
 
-      {data && <p>{data.canonicalName}</p>}
+      {data && <SpeciesCard species={data} />}
     </>
   );
 }
