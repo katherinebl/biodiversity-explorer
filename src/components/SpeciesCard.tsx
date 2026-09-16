@@ -1,4 +1,5 @@
 import type { Species } from "../types/species";
+import "./SpeciesCard.css";
 
 type SpeciesCardProps = {
   species: Species;
@@ -9,10 +10,11 @@ function SpeciesCard({ species }: SpeciesCardProps) {
     <>
       <h2>{species.canonicalName}</h2>
       <p>{species.rank}</p>
-      <ul>
+      <ul className="classification-list">
         {species.classification.map((taxon) => (
-          <li key={taxon.key}>
-            {taxon.rank} | {taxon.name}
+          <li key={taxon.key} className="classification-item">
+            <span className="classification-rank">{taxon.rank}</span>{" "}
+            <span className="classification-name">{taxon.name}</span>
           </li>
         ))}
       </ul>
