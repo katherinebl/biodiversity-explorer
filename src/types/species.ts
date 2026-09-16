@@ -33,6 +33,7 @@ export type Species = {
   rank: string;
   conservationStatus?: string;
   classification: GbifSpeciesTaxon[];
+  image: SpeciesImage | null;
 };
 
 export type SpeciesImage = {

@@ -15,11 +15,15 @@ function SpeciesSearch() {
 
     if (query) {
       console.log(`Searching for species: ${query}`);
-      const result = await searchSpecies(query);
-      setData(result);
+      const speciesInfo = await searchSpecies(query);
+      const speciesImage = await searchTaxa(
+        speciesInfo.canonicalName,
+        speciesInfo.rank,
+      );
+      setData({ ...speciesInfo, image: speciesImage });
 
-      const canonicalName = result?.canonicalName;
-      const rank = result?.rank;
+      const canonicalName = speciesInfo?.canonicalName;
+      const rank = speciesInfo?.rank;
 
       if (canonicalName && rank) {
         console.log(

@@ -19,6 +19,15 @@ function SpeciesCard({ species }: SpeciesCardProps) {
       {species.conservationStatus && (
         <p>Conservation Status: {species.conservationStatus}</p>
       )}
+      {species.image && (
+        <div>
+          <img src={species.image.url} alt={species.canonicalName} />
+          <p>
+            Image License: {species.image.license} | Attribution:{" "}
+            {species.image.attribution}
+          </p>
+        </div>
+      )}
     </>
   );
 }
