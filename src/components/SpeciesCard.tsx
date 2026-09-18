@@ -8,7 +8,10 @@ type SpeciesCardProps = {
 function SpeciesCard({ species }: SpeciesCardProps) {
   return (
     <>
-      <h2>{species.canonicalName}</h2>
+      <h2>{species.commonName ?? species.canonicalName}</h2>
+      {species.commonName && (
+        <p className="canonical-name">{species.canonicalName}</p>
+      )}
       <div className="species-card">
         <div className="species-image-container">
           {species.image && (
@@ -32,10 +35,34 @@ function SpeciesCard({ species }: SpeciesCardProps) {
               </li>
             ))}
           </ul>
+
           {species.conservationStatus && (
             <>
               <h3>CONSERVATION STATUS</h3>
               <p>{species.conservationStatus}</p>
+            </>
+          )}
+
+          {species.iNaturalistObservations > 0 && (
+            <>
+              <h3>OBSERVATIONS</h3>
+              <p>
+                {species.iNaturalistObservations.toLocaleString()} observations
+                on iNaturalist
+              </p>
+            </>
+          )}
+
+          {species.wikipediaURL && (
+            <>
+              <h3>MORE INFORMATION</h3>
+              <a
+                href={species.wikipediaURL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on Wikipedia
+              </a>
             </>
           )}
         </div>
