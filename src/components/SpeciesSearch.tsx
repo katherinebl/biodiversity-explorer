@@ -6,6 +6,7 @@ import searchTaxon from "../api/inaturalist";
 
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
+  console.log("Species data:", data);
 
   async function handleSearch(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -15,15 +16,23 @@ function SpeciesSearch() {
 
     if (query) {
       console.log(`Searching for species: ${query}`);
-      const speciesInfo = await searchSpecies(query);
-      const speciesImage = await searchTaxon(
-        speciesInfo.canonicalName,
-        speciesInfo.rank,
+      const gbifData = await searchSpecies(query);
+      const iNaturalistData = await searchTaxon(
+        gbifData.canonicalName,
+        gbifData.rank,
       );
-      setData({ ...speciesInfo, image: speciesImage });
+      const safeINaturalistData = iNaturalistData ?? {
+        iNaturalistObservations: 0,
+        image: null,
+      };
 
-      const canonicalName = speciesInfo?.canonicalName;
-      const rank = speciesInfo?.rank;
+      setData({
+        ...gbifData,
+        ...safeINaturalistData,
+      });
+
+      const canonicalName = gbifData?.canonicalName;
+      const rank = gbifData?.rank;
 
       if (canonicalName && rank) {
         console.log(
