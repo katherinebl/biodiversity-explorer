@@ -1,13 +1,13 @@
 import type {
+  INaturalistSpecies,
   INaturalistTaxaResponse,
   INaturalistTaxon,
-  SpeciesImage,
 } from "../types/species";
 
-async function searchTaxa(
+async function searchTaxon(
   canonicalName: string,
   rank: string,
-): Promise<SpeciesImage | null> {
+): Promise<INaturalistSpecies | null> {
   const url = `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(canonicalName)}&is_active=true&rank=${encodeURIComponent(rank.toLowerCase())}&order=desc&order_by=observations_count`;
 
   try {
@@ -19,30 +19,32 @@ async function searchTaxa(
 
     const data: INaturalistTaxaResponse = await response.json();
 
-    if (data.results.length > 0) {
-      console.log("iNaturalist API response:", data);
+    const foundTaxon: INaturalistTaxon | undefined = data.results.find(
+      (taxon) => taxon.name === canonicalName,
+    );
 
-      const foundTaxon: INaturalistTaxon | undefined = data.results.find(
-        (taxon) => taxon.name === canonicalName,
-      );
-      console.log("Found taxon:", foundTaxon);
+    if (!foundTaxon) {
+      return null;
+    }
 
-      const speciesImage: SpeciesImage | null = foundTaxon?.default_photo
+    const species: INaturalistSpecies = {
+      commonName: foundTaxon.preferred_common_name,
+      wikipediaURL: foundTaxon.wikipedia_url,
+      iNaturalistObservations: foundTaxon.observations_count,
+      image: foundTaxon.default_photo
         ? {
             url: foundTaxon.default_photo.medium_url,
             license: foundTaxon.default_photo.license_code,
             attribution: foundTaxon.default_photo.attribution,
           }
-        : null;
+        : null,
+    };
 
-      return speciesImage;
-    }
+    return species;
   } catch (error) {
     console.error("Error fetching taxa data:", error);
     throw error;
   }
-
-  return null;
 }
 
-export default searchTaxa;
+export default searchTaxon;

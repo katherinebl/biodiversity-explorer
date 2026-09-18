@@ -27,12 +27,18 @@ export type GbifSpeciesTaxon = {
 
 // Internal/domain types used in the application
 
-export type Species = {
+export type GbifSpecies = {
   canonicalName: string;
   key: string;
   rank: string;
   conservationStatus?: string;
   classification: GbifSpeciesTaxon[];
+};
+
+export type INaturalistSpecies = {
+  commonName?: string;
+  wikipediaURL?: string;
+  iNaturalistObservations: number;
   image: SpeciesImage | null;
 };
 
@@ -42,12 +48,12 @@ export type SpeciesImage = {
   attribution: string;
 };
 
+export type Species = GbifSpecies & INaturalistSpecies;
+
 // iNaturalist API response types
 
-export type INaturalistSpeciesImage = {
-  medium_url: string;
-  license_code: string;
-  attribution: string;
+export type INaturalistTaxaResponse = {
+  results: INaturalistTaxon[];
 };
 
 export type INaturalistTaxon = {
@@ -56,8 +62,13 @@ export type INaturalistTaxon = {
   name: string;
   rank: string;
   default_photo?: INaturalistSpeciesImage;
+  preferred_common_name?: string;
+  wikipedia_url?: string;
+  observations_count: number;
 };
 
-export type INaturalistTaxaResponse = {
-  results: INaturalistTaxon[];
+export type INaturalistSpeciesImage = {
+  medium_url: string;
+  license_code: string;
+  attribution: string;
 };

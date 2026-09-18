@@ -2,7 +2,7 @@ import { useState } from "react";
 import searchSpecies from "../api/gbif";
 import type { Species } from "../types/species";
 import SpeciesCard from "./SpeciesCard";
-import searchTaxa from "../api/inaturalist";
+import searchTaxon from "../api/inaturalist";
 
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
@@ -16,7 +16,7 @@ function SpeciesSearch() {
     if (query) {
       console.log(`Searching for species: ${query}`);
       const speciesInfo = await searchSpecies(query);
-      const speciesImage = await searchTaxa(
+      const speciesImage = await searchTaxon(
         speciesInfo.canonicalName,
         speciesInfo.rank,
       );
@@ -29,7 +29,7 @@ function SpeciesSearch() {
         console.log(
           `Searching for taxa with canonical name: ${canonicalName} and rank: ${rank}`,
         );
-        const taxaResult = await searchTaxa(canonicalName, rank);
+        const taxaResult = await searchTaxon(canonicalName, rank);
         console.log("iNaturalist taxa search result:", taxaResult);
       }
     }
