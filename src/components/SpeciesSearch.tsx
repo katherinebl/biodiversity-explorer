@@ -3,6 +3,7 @@ import searchSpecies from "../api/gbif";
 import type { Species } from "../types/species";
 import SpeciesCard from "./SpeciesCard";
 import searchTaxon from "../api/inaturalist";
+import "./SpeciesSearch.css";
 
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
@@ -46,10 +47,19 @@ function SpeciesSearch() {
 
   return (
     <>
-      <form onSubmit={handleSearch}>
-        <label htmlFor="species-search">Search</label>
-        <input id="species-search" type="search" />
-        <button type="submit">Search</button>
+      <form onSubmit={handleSearch} className="species-search-form">
+        <label htmlFor="species-search" className="species-search-label">
+          Search
+        </label>
+        <input
+          id="species-search"
+          type="search"
+          placeholder="Enter species name..."
+          className="species-search-input"
+        />
+        <button type="submit" className="species-search-button">
+          Search
+        </button>
       </form>
 
       {data && <SpeciesCard species={data} />}
