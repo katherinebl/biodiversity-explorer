@@ -7,60 +7,50 @@ type SpeciesCardProps = {
 
 function SpeciesCard({ species }: SpeciesCardProps) {
   return (
-    <>
-      <h2>{species.commonName ?? species.canonicalName}</h2>
-      {species.commonName && (
-        <p className="canonical-name">{species.canonicalName}</p>
-      )}
-      <div className="species-card">
+    <article className="species-card">
+      {species.image && (
         <div className="species-image-container">
-          {species.image && (
-            <div>
-              <img
-                src={species.image.url}
-                alt={species.canonicalName}
-                width={species.image.originalDimensions.width}
-                height={species.image.originalDimensions.height}
-              />
-              <p>
-                Image License: {species.image.license} | Attribution:{" "}
-                {species.image.attribution}
-              </p>
-            </div>
-          )}
+          <img
+            src={species.image.url}
+            alt={species.canonicalName}
+            width={species.image.originalDimensions.width}
+            height={species.image.originalDimensions.height}
+          />
+          <p className="image-credit">
+            Image License: {species.image.license} | Attribution: {species.image.attribution}
+          </p>
         </div>
-
+      )}
         <div className="species-details-container">
-          <h3>TAXONOMY</h3>
-          <ul className="classification-list">
-            {species.classification.map((taxon) => (
-              <li key={taxon.key} className="classification-item">
-                <span className="classification-rank">{taxon.rank}</span>{" "}
-                <span className="classification-name">{taxon.name}</span>
-              </li>
-            ))}
-          </ul>
+          <header className="species-card-header">
+            <h2>{species.commonName ?? species.canonicalName}</h2>
+            {species.commonName && (
+              <p className="canonical-name">{species.canonicalName}</p>
+            )}
+          </header>
 
           {species.conservationStatus && (
-            <>
-              <h3>CONSERVATION STATUS</h3>
-              <p>{species.conservationStatus}</p>
-            </>
+            <section className="species-card-section">
+              <div className="section-heading">
+                <h3>Conservation status</h3>
+              </div>
+              <p className="status-value">{species.conservationStatus}</p>
+            </section>
           )}
 
           {species.iNaturalistObservations > 0 && (
-            <>
-              <h3>OBSERVATIONS</h3>
+            <section className="species-card-section">
+              <h3>Observations</h3>
               <p>
                 {species.iNaturalistObservations.toLocaleString()} observations
                 on iNaturalist
               </p>
-            </>
+            </section>
           )}
 
           {species.wikipediaURL && (
-            <>
-              <h3>MORE INFORMATION</h3>
+            <section className="species-card-section">
+              <h3>More information</h3>
               <a
                 href={species.wikipediaURL}
                 target="_blank"
@@ -68,11 +58,29 @@ function SpeciesCard({ species }: SpeciesCardProps) {
               >
                 View on Wikipedia
               </a>
-            </>
+            </section>
           )}
         </div>
-      </div>
-    </>
+      <section className="species-taxonomy-section">
+        <h3>Taxonomy</h3>
+        <ul className="classification-list">
+          {species.classification.map((taxon) => (
+            <li key={taxon.key} className="classification-item">
+              <span className="classification-rank">{taxon.rank}</span>
+              <span
+                className={`classification-name${
+                  ["GENUS", "SPECIES"].includes(taxon.rank.toUpperCase())
+                    ? " classification-scientific-name"
+                    : ""
+                }`}
+              >
+                {taxon.name}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </article>
   );
 }
 

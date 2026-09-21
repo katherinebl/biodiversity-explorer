@@ -61,6 +61,9 @@ function SpeciesSearch() {
           Search
         </button>
       </form>
+      <p className="species-search-examples">
+        Try snow leopard, red fox, blue whale or sumatran orangutan
+      </p>
 
       {data && <SpeciesCard species={data} />}
     </>
