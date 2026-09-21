@@ -16,12 +16,12 @@ function SpeciesSearch() {
     const query = input.value.trim();
 
     if (query) {
-      console.log(`Searching for species: ${query}`);
       const gbifData = await searchSpecies(query);
       const iNaturalistData = await searchTaxon(
         gbifData.canonicalName,
         gbifData.rank,
       );
+
       const safeINaturalistData = iNaturalistData ?? {
         iNaturalistObservations: 0,
         image: null,
@@ -31,17 +31,6 @@ function SpeciesSearch() {
         ...gbifData,
         ...safeINaturalistData,
       });
-
-      const canonicalName = gbifData?.canonicalName;
-      const rank = gbifData?.rank;
-
-      if (canonicalName && rank) {
-        console.log(
-          `Searching for taxa with canonical name: ${canonicalName} and rank: ${rank}`,
-        );
-        const taxaResult = await searchTaxon(canonicalName, rank);
-        console.log("iNaturalist taxa search result:", taxaResult);
-      }
     }
   }
 
@@ -61,9 +50,6 @@ function SpeciesSearch() {
           Search
         </button>
       </form>
-      <p className="species-search-examples">
-        Try snow leopard, red fox, blue whale or sumatran orangutan
-      </p>
 
       {data && <SpeciesCard species={data} />}
     </>

@@ -39,12 +39,6 @@
   background-color: #263b2f;
 }
 
-.species-search-examples {
-  margin: 13px 4px 40px;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
 @media (max-width: 767px) {
   .species-search-form {
     min-height: 49px;
@@ -61,12 +55,5 @@
     padding: 0 19px;
     border-radius: 9px;
     font-size: 0.8rem;
-  }
-
-  .species-search-examples {
-    max-width: 265px;
-    margin: 18px 3px 28px;
-    font-size: 0.75rem;
-    line-height: 2.75;
   }
 }
