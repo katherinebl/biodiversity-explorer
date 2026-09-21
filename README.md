@@ -1,75 +1,75 @@
-# React + TypeScript + Vite
+# Biodiversity Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive web application for exploring species information using real-world biodiversity data.
 
-Currently, two official plugins are available:
+Search for a species by scientific name to view its taxonomy, conservation status, observation data, and representative image.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Biodiversity Explorer desktop view](./docs/biodiversity-explorer-desktop-img.png)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Search species by scientific name
+- Display taxonomic classification from kingdom to species
+- Show conservation status when available
+- Display observation counts and common names
+- Show representative species images with license and attribution information
+- Link to additional information on Wikipedia
+- Responsive layout for mobile and desktop
 
-## Expanding the ESLint configuration
+## Data sources
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The application combines data from two public biodiversity APIs:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **GBIF Species API** — scientific names, taxonomy, and conservation status
+- **iNaturalist API** — common names, observation counts, images, image attribution, and Wikipedia links
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+API responses are transformed into internal domain models before being consumed by the UI, keeping external API structures separate from the application's data model.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Tech stack
 
+- React
+- TypeScript
+- Vite
+- CSS
+- GBIF API
+- iNaturalist API
+
+## Technical highlights
+
+### Multiple API integration
+
+Species data is composed from GBIF and iNaturalist while keeping each external API response type separate from the application's internal `Species` model.
+
+### Image layout stability
+
+Image dimensions provided by iNaturalist are propagated through the application and rendered using native `width` and `height` attributes. This allows the browser to determine the image aspect ratio before the resource finishes loading, preventing layout shifts caused by species images.
+
+### Responsive design
+
+The interface uses mobile-first CSS, reusable spacing custom properties, and responsive layout changes for the species details and taxonomy.
+
+## Running locally
+
+Clone the repository and install the dependencies:
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Start the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create a production build:
 
+```bash
+npm run build
+```
+
+Run ESLint:
+
+```bash
+npm run lint
 ```
