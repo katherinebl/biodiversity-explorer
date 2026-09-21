@@ -35,7 +35,7 @@ function SpeciesSearch() {
   }
 
   return (
-    <>
+    <div className="species-search">
       <form onSubmit={handleSearch} className="species-search-form">
         <label htmlFor="species-search" className="species-search-label">
           Search
@@ -43,7 +43,7 @@ function SpeciesSearch() {
         <input
           id="species-search"
           type="search"
-          placeholder=" E.g. Panthera leo"
+          placeholder="E.g. Panthera leo"
           className="species-search-input"
         />
         <button type="submit" className="species-search-button">
@@ -52,7 +52,7 @@ function SpeciesSearch() {
       </form>
 
       {data && <SpeciesCard species={data} />}
-    </>
+    </div>
   );
 }
 
