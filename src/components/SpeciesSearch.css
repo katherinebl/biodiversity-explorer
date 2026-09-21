@@ -1,6 +1,7 @@
 .species-search-form {
   display: flex;
-  max-width: 600px;
+  width: calc(100% - 32px);
+  max-width: 500px;
   margin: 0 auto;
   gap: 8px;
 }

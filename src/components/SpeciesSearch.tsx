@@ -54,7 +54,7 @@ function SpeciesSearch() {
         <input
           id="species-search"
           type="search"
-          placeholder="Enter species name..."
+          placeholder=" E.g. Panthera leo"
           className="species-search-input"
         />
         <button type="submit" className="species-search-button">
