@@ -36,6 +36,10 @@ async function searchTaxon(
             url: foundTaxon.default_photo.medium_url,
             license: foundTaxon.default_photo.license_code,
             attribution: foundTaxon.default_photo.attribution,
+            originalDimensions: {
+              width: foundTaxon.default_photo.original_dimensions.width,
+              height: foundTaxon.default_photo.original_dimensions.height,
+            },
           }
         : null,
     };

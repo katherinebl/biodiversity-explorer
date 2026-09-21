@@ -16,7 +16,12 @@ function SpeciesCard({ species }: SpeciesCardProps) {
         <div className="species-image-container">
           {species.image && (
             <div>
-              <img src={species.image.url} alt={species.canonicalName} />
+              <img
+                src={species.image.url}
+                alt={species.canonicalName}
+                width={species.image.originalDimensions.width}
+                height={species.image.originalDimensions.height}
+              />
               <p>
                 Image License: {species.image.license} | Attribution:{" "}
                 {species.image.attribution}

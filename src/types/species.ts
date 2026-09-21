@@ -46,6 +46,10 @@ export type SpeciesImage = {
   url: string;
   license: string;
   attribution: string;
+  originalDimensions: {
+    width: number;
+    height: number;
+  };
 };
 
 export type Species = GbifSpecies & INaturalistSpecies;
@@ -71,4 +75,8 @@ export type INaturalistSpeciesImage = {
   medium_url: string;
   license_code: string;
   attribution: string;
+  original_dimensions: {
+    width: number;
+    height: number;
+  };
 };
