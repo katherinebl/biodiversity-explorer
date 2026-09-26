@@ -1,10 +1,22 @@
 import { useState } from "react";
 import { searchSpecies, NoReliableMatchError } from "../api/gbif";
-import type { Species } from "../types/species";
+import type { GbifSpecies, Species } from "../types/species";
 import SpeciesCard from "./SpeciesCard";
 import searchTaxon from "../api/inaturalist";
 import "./SpeciesSearch.css";
-import { resolveScientificName } from "../api/wikidata";
+import { resolveScientificName, TaxonIsNotSpeciesError } from "../api/wikidata";
+
+async function resolveSpecies(query: string): Promise<GbifSpecies> {
+  try {
+    return await searchSpecies(query);
+  } catch (error) {
+    if (error instanceof NoReliableMatchError) {
+      const scientificName = await resolveScientificName(query);
+      return await searchSpecies(scientificName);
+    }
+    throw error;
+  }
+}
 
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
@@ -18,15 +30,13 @@ function SpeciesSearch() {
 
     if (query) {
       try {
-        gbifData = await searchSpecies(query);
+        gbifData = await resolveSpecies(query);
       } catch (error) {
-        if (error instanceof NoReliableMatchError) {
-          const scientificName = await resolveScientificName(query);
-          gbifData = await searchSpecies(scientificName);
-        } else {
-          console.error("Unexpected error occurred:", error);
+        if (error instanceof TaxonIsNotSpeciesError) {
+          console.error("El taxon no es una especie!");
           return;
         }
+        throw error;
       }
       const iNaturalistData = await searchTaxon(
         gbifData.canonicalName,
