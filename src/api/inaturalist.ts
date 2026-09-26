@@ -1,8 +1,8 @@
 import type {
-  INaturalistSpecies,
   INaturalistTaxaResponse,
   INaturalistTaxon,
-} from "../types/species";
+} from "../types/inaturalist";
+import type { INaturalistSpecies } from "../types/species";
 
 async function searchTaxon(
   canonicalName: string,

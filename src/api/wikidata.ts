@@ -1,3 +1,5 @@
+import type { WikidataResponse } from "../types/wikidata";
+
 export class CommonNameNotFoundError extends Error {
   constructor(message: string) {
     super(message);
@@ -12,44 +14,12 @@ export class TaxonIsNotSpeciesError extends Error {
   }
 }
 
-type WikidataResponse = {
-  entities: {
-    [key: string]: WikidataEntity;
-  };
-};
-
-type WikidataEntity = {
-  claims: {
-    P225?: TaxonNameClaim[];
-    P105?: TaxonRankClaim[];
-  };
-};
-
-type TaxonNameClaim = {
-  mainsnak: {
-    datavalue: {
-      value: string;
-    };
-  };
-};
-
-type TaxonRankClaim = {
-  mainsnak: {
-    datavalue: {
-      value: {
-        id: string;
-      };
-    };
-  };
-};
-
 export async function resolveScientificName(query: string): Promise<string> {
   const SPECIES_RANK_ID = "Q7432";
 
   const url = `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}&limit=5`;
   const response = await fetch(url);
   const data = await response.json();
-  console.log(data);
   const wikipediaTitle = data.pages[0]?.title;
 
   if (!wikipediaTitle) {
