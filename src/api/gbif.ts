@@ -1,6 +1,13 @@
 import type { GbifSpecies, GbifSpeciesMatchResponse } from "../types/species";
 
-async function searchSpecies(query: string): Promise<GbifSpecies> {
+export class NoReliableMatchError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "NoReliableMatchError";
+  }
+}
+
+export async function searchSpecies(query: string): Promise<GbifSpecies> {
   const url = `https://api.gbif.org/v2/species/match?scientificName=${encodeURIComponent(query)}`;
 
   try {
@@ -16,7 +23,7 @@ async function searchSpecies(query: string): Promise<GbifSpecies> {
       data.diagnostics.matchType !== "EXACT" ||
       data.diagnostics.confidence < 95
     ) {
-      throw new Error("No reliable exact match found");
+      throw new NoReliableMatchError("No reliable exact match found");
     }
 
     const species: GbifSpecies = {
@@ -33,5 +40,3 @@ async function searchSpecies(query: string): Promise<GbifSpecies> {
     throw error;
   }
 }
-
-export default searchSpecies;
