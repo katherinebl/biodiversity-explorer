@@ -4,6 +4,10 @@ A responsive web application for exploring species information using real-world 
 
 Search for a species by scientific name to view its taxonomy, conservation status, observation data, and representative image.
 
+## Live Demo
+
+[View Biodiversity Explorer](https://katherinebl.github.io/biodiversity-explorer/)
+
 ![Biodiversity Explorer desktop view](./docs/biodiversity-explorer-desktop-img.png)
 
 ## Features
