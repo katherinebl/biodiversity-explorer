@@ -44,6 +44,15 @@
   background-color: #263b2f;
 }
 
+.species-search-error {
+  color: rgb(210, 4, 4);
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 @media (min-width: 768px) {
   .species-search-form {
     min-height: 64px;

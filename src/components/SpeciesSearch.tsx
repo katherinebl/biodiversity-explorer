@@ -9,6 +9,7 @@ import {
   resolveScientificName,
   TaxonIsNotSpeciesError,
 } from "../api/wikidata";
+import InfoIcon from "./InfoIcon";
 
 async function resolveSpecies(query: string): Promise<GbifSpecies> {
   try {
@@ -87,7 +88,14 @@ function SpeciesSearch() {
       </form>
 
       {data && <SpeciesCard species={data} />}
-      {error && <p>{error}</p>}
+      {error && (
+        <>
+          <p role="alert" className="species-search-error">
+            <InfoIcon />
+            {error}
+          </p>
+        </>
+      )}
     </div>
   );
 }
