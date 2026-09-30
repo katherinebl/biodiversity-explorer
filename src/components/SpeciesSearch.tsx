@@ -4,7 +4,7 @@ import type { GbifSpecies, Species } from "../types/species";
 import SpeciesCard from "./SpeciesCard";
 import searchTaxon from "../api/inaturalist";
 import "./SpeciesSearch.css";
-import { resolveScientificName, TaxonIsNotSpeciesError } from "../api/wikidata";
+import { CommonNameNotFoundError, resolveScientificName, TaxonIsNotSpeciesError } from "../api/wikidata";
 
 async function resolveSpecies(query: string): Promise<GbifSpecies> {
   try {
@@ -35,7 +35,13 @@ function SpeciesSearch() {
         if (error instanceof TaxonIsNotSpeciesError) {
           console.error("El taxon no es una especie!");
           return;
+        } 
+
+        if(error instanceof CommonNameNotFoundError) {
+          console.error("Nombre común no encontrado!")
+          return;
         }
+        
         throw error;
       }
       const iNaturalistData = await searchTaxon(
