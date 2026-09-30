@@ -20,6 +20,7 @@ async function resolveSpecies(query: string): Promise<GbifSpecies> {
 
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSearch(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,19 +30,21 @@ function SpeciesSearch() {
     let gbifData;
 
     if (query) {
+      setError(null)
+      setData(null)
       try {
         gbifData = await resolveSpecies(query);
       } catch (error) {
         if (error instanceof TaxonIsNotSpeciesError) {
-          console.error("El taxon no es una especie!");
+          setError("We couldn't find a species matching your search. Try a scientific name or a more specific common name.")
           return;
         } 
 
         if(error instanceof CommonNameNotFoundError) {
-          console.error("Nombre común no encontrado!")
+          setError("We couldn't find a species matching your search. Try a scientific name or a more specific common name.")
           return;
         }
-        
+
         throw error;
       }
       const iNaturalistData = await searchTaxon(
@@ -79,6 +82,7 @@ function SpeciesSearch() {
       </form>
 
       {data && <SpeciesCard species={data} />}
+      {error && <p>{error}</p>}
     </div>
   );
 }
