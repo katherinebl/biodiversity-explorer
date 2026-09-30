@@ -4,7 +4,11 @@ import type { GbifSpecies, Species } from "../types/species";
 import SpeciesCard from "./SpeciesCard";
 import searchTaxon from "../api/inaturalist";
 import "./SpeciesSearch.css";
-import { CommonNameNotFoundError, resolveScientificName, TaxonIsNotSpeciesError } from "../api/wikidata";
+import {
+  CommonNameNotFoundError,
+  resolveScientificName,
+  TaxonIsNotSpeciesError,
+} from "../api/wikidata";
 
 async function resolveSpecies(query: string): Promise<GbifSpecies> {
   try {
@@ -30,18 +34,19 @@ function SpeciesSearch() {
     let gbifData;
 
     if (query) {
-      setError(null)
-      setData(null)
+      setError(null);
+      setData(null);
+
       try {
         gbifData = await resolveSpecies(query);
       } catch (error) {
-        if (error instanceof TaxonIsNotSpeciesError) {
-          setError("We couldn't find a species matching your search. Try a scientific name or a more specific common name.")
-          return;
-        } 
-
-        if(error instanceof CommonNameNotFoundError) {
-          setError("We couldn't find a species matching your search. Try a scientific name or a more specific common name.")
+        if (
+          error instanceof TaxonIsNotSpeciesError ||
+          error instanceof CommonNameNotFoundError
+        ) {
+          setError(
+            "We couldn't find a species matching your search. Try a scientific name or a more specific common name.",
+          );
           return;
         }
 
