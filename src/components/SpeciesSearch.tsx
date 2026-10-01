@@ -10,6 +10,7 @@ import {
   TaxonIsNotSpeciesError,
 } from "../api/wikidata";
 import InfoIcon from "./InfoIcon";
+import { getSpeciesSummary } from "../api/wikipedia";
 
 async function resolveSpecies(query: string): Promise<GbifSpecies> {
   try {
@@ -63,9 +64,12 @@ function SpeciesSearch() {
         image: null,
       };
 
+      const summary = await getSpeciesSummary(gbifData.canonicalName);
+
       setData({
         ...gbifData,
         ...safeINaturalistData,
+        summary: summary,
       });
     }
   }

@@ -30,6 +30,13 @@ function SpeciesCard({ species }: SpeciesCardProps) {
           )}
         </header>
 
+        {species.summary && (
+          <section className="species-card-section">
+            <h3>About</h3>
+            <p>{species.summary}</p>
+          </section>
+        )}
+
         {species.conservationStatus && (
           <section className="species-card-section">
             <h3>Conservation status</h3>
