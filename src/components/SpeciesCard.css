@@ -25,6 +25,7 @@
 
 .species-details-container {
   padding: var(--space-md);
+  border-top: 1px solid var(--border);
 }
 
 .species-card-header {
@@ -53,6 +54,10 @@
   gap: var(--space-sm);
   padding: var(--space-md) 0;
   border-top: 1px solid var(--border);
+}
+
+.species-about-section {
+  margin: 0 var(--space-md);
 }
 
 .species-card-section:last-child {
@@ -135,17 +140,32 @@
   .species-card {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-areas:
+      "image details"
+      "about about"
+      "taxonomy taxonomy";
   }
 
   .species-card:not(:has(.species-image-container)) {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "about"
+      "details"
+      "taxonomy";
   }
 
   .species-image-container {
+    grid-area: image;
     margin: var(--space-lg);
   }
 
+  .species-about-section {
+    grid-area: about;
+    margin: 0 var(--space-lg);
+  }
+
   .species-details-container {
+    grid-area: details;
     padding: var(--space-xl);
   }
 
@@ -171,7 +191,7 @@
   }
 
   .species-taxonomy-section {
-    grid-column: 1 / -1;
+    grid-area: taxonomy;
     margin: 0 var(--space-lg) var(--space-lg);
     padding-top: var(--space-lg);
   }

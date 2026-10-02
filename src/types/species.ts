@@ -31,4 +31,8 @@ export type SpeciesImage = {
   };
 };
 
-export type Species = GbifSpecies & INaturalistSpecies;
+export type WikipediaSpecies = {
+  summary: string | null;
+};
+
+export type Species = GbifSpecies & INaturalistSpecies & WikipediaSpecies;
