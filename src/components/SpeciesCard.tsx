@@ -22,6 +22,14 @@ function SpeciesCard({ species }: SpeciesCardProps) {
           </p>
         </div>
       )}
+
+      {species.summary && (
+        <section className="species-card-section species-about-section">
+          <h3>About</h3>
+          <p>{species.summary}</p>
+        </section>
+      )}
+
       <div className="species-details-container">
         <header className="species-card-header">
           <h2>{species.commonName ?? species.canonicalName}</h2>
@@ -29,13 +37,6 @@ function SpeciesCard({ species }: SpeciesCardProps) {
             <p className="canonical-name">{species.canonicalName}</p>
           )}
         </header>
-
-        {species.summary && (
-          <section className="species-card-section">
-            <h3>About</h3>
-            <p>{species.summary}</p>
-          </section>
-        )}
 
         {species.conservationStatus && (
           <section className="species-card-section">
