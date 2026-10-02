@@ -2,9 +2,13 @@ import type { WikipediaSummaryResponse } from "../types/wikipedia";
 
 export async function getSpeciesSummary(
   canonicalName: string,
-): Promise<string> {
+): Promise<string | null> {
   const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(canonicalName)}`;
   const response = await fetch(url);
+
+  if (response.status === 404) {
+    return null;
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -15,7 +19,7 @@ export async function getSpeciesSummary(
   const data: WikipediaSummaryResponse = await response.json();
 
   if (!data.extract) {
-    throw new Error("No summary found for the given canonical name");
+    return null;
   }
 
   return data.extract;

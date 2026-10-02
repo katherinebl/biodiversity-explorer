@@ -64,7 +64,16 @@ function SpeciesSearch() {
         image: null,
       };
 
-      const summary = await getSpeciesSummary(gbifData.canonicalName);
+      let summary: string | null = null;
+
+      try {
+        summary = await getSpeciesSummary(gbifData.canonicalName);
+      } catch (error) {
+        console.error(
+          `Failed to fetch summary for ${gbifData.canonicalName}:`,
+          error,
+        );
+      }
 
       setData({
         ...gbifData,

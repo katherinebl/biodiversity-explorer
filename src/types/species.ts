@@ -32,7 +32,7 @@ export type SpeciesImage = {
 };
 
 export type WikipediaSpecies = {
-  summary?: string;
+  summary: string | null;
 };
 
 export type Species = GbifSpecies & INaturalistSpecies & WikipediaSpecies;
