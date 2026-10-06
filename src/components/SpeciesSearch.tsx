@@ -11,6 +11,7 @@ import {
 } from "../api/wikidata";
 import InfoIcon from "./InfoIcon";
 import { getSpeciesSummary } from "../api/wikipedia";
+import SpeciesCardSkeleton from "./SpeciesCardSkeleton";
 
 async function resolveSpecies(query: string): Promise<GbifSpecies> {
   try {
@@ -27,33 +28,25 @@ async function resolveSpecies(query: string): Promise<GbifSpecies> {
 function SpeciesSearch() {
   const [data, setData] = useState<Species | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleSearch(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const input = form.elements.namedItem("species-search") as HTMLInputElement;
     const query = input.value.trim();
-    let gbifData;
 
-    if (query) {
-      setError(null);
-      setData(null);
+    setError(null);
+    setData(null);
 
-      try {
-        gbifData = await resolveSpecies(query);
-      } catch (error) {
-        if (
-          error instanceof TaxonIsNotSpeciesError ||
-          error instanceof CommonNameNotFoundError
-        ) {
-          setError(
-            "We couldn't find a species matching your search. Try a scientific name or a more specific common name.",
-          );
-          return;
-        }
+    if (!query) {
+      return;
+    }
 
-        throw error;
-      }
+    setIsLoading(true);
+
+    try {
+      const gbifData = await resolveSpecies(query);
       const iNaturalistData = await searchTaxon(
         gbifData.canonicalName,
         gbifData.rank,
@@ -80,6 +73,20 @@ function SpeciesSearch() {
         ...safeINaturalistData,
         summary: summary,
       });
+    } catch (error) {
+      if (
+        error instanceof TaxonIsNotSpeciesError ||
+        error instanceof CommonNameNotFoundError
+      ) {
+        setError(
+          "We couldn't find a species matching your search. Try a scientific name or a more specific common name.",
+        );
+        return;
+      }
+
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -95,11 +102,16 @@ function SpeciesSearch() {
           placeholder="E.g. Panthera leo"
           className="species-search-input"
         />
-        <button type="submit" className="species-search-button">
+        <button
+          type="submit"
+          className="species-search-button"
+          disabled={isLoading}
+        >
           Search
         </button>
       </form>
 
+      {isLoading && <SpeciesCardSkeleton />}
       {data && <SpeciesCard species={data} />}
       {error && (
         <>

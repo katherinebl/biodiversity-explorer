@@ -44,6 +44,11 @@
   background-color: #263b2f;
 }
 
+.species-search-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .species-search-error {
   color: rgb(210, 4, 4);
   font-weight: 500;
