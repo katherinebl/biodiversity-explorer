@@ -93,13 +93,13 @@ function SpeciesSearch() {
   return (
     <div className="species-search">
       <form onSubmit={handleSearch} className="species-search-form">
-        <label htmlFor="species-search" className="species-search-label">
-          Search
+        <label htmlFor="species-search" className="visually-hidden">
+          Search Species
         </label>
         <input
           id="species-search"
           type="search"
-          placeholder="E.g. Panthera leo"
+          placeholder="E.g. Lion"
           className="species-search-input"
         />
         <button
