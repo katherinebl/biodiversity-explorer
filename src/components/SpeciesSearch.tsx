@@ -30,6 +30,12 @@ function SpeciesSearch() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const statusMessage = isLoading
+    ? "Searching..."
+    : data
+      ? `Species found: ${data.canonicalName}.`
+      : null;
+
   async function handleSearch(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -111,16 +117,19 @@ function SpeciesSearch() {
         </button>
       </form>
 
-      {isLoading && <SpeciesCardSkeleton />}
-      {data && <SpeciesCard species={data} />}
-      {error && (
-        <>
+      <div className="species-search-results" aria-busy={isLoading}>
+        {isLoading && <SpeciesCardSkeleton />}
+        {data && <SpeciesCard species={data} />}
+        {error && (
           <p role="alert" className="species-search-error">
             <InfoIcon />
             {error}
           </p>
-        </>
-      )}
+        )}
+      </div>
+      <p role="status" className="visually-hidden">
+        {statusMessage}
+      </p>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import "./SpeciesCardSkeleton.css";
 
 function SpeciesCardSkeleton() {
   return (
-    <article className="species-card-skeleton">
+    <article className="species-card-skeleton" aria-hidden="true">
       <div className="skeleton-image-area">
         <div className="skeleton-block skeleton-image"></div>
       </div>
