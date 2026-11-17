@@ -1,37 +1,49 @@
 import { expect, it, vi } from "vitest";
 import type { GbifSpeciesMatchResponse } from "../types/gbif";
-import { searchSpecies } from "./gbif";
+import { NoReliableMatchError, searchSpecies } from "./gbif";
 
-it("accepts an EXACT match with confidence 95 and returns the mapped species", async () => {
-  // Arrange
-  const responseData: GbifSpeciesMatchResponse = {
-    diagnostics: {
-      matchType: "EXACT",
-      confidence: 95,
-    },
-    usage: {
-      canonicalName: "Panthera leo",
-      key: "5219404",
-      rank: "SPECIES",
-    },
-    classification: [
-      { key: "1", name: "Animalia", rank: "KINGDOM" },
-      { key: "44", name: "Chordata", rank: "PHYLUM" },
-      { key: "359", name: "Mammalia", rank: "CLASS" },
-      { key: "732", name: "Carnivora", rank: "ORDER" },
-      { key: "9703", name: "Felidae", rank: "FAMILY" },
-      { key: "2435194", name: "Panthera", rank: "GENUS" },
-      { key: "5219404", name: "Panthera leo", rank: "SPECIES" },
-    ],
-    additionalStatus: [{ status: "VULNERABLE" }],
-  };
+const createGbifResponse = (
+  matchType = "EXACT",
+  confidence = 95,
+): GbifSpeciesMatchResponse => ({
+  diagnostics: {
+    matchType,
+    confidence,
+  },
+  usage: {
+    canonicalName: "Panthera leo",
+    key: "5219404",
+    rank: "SPECIES",
+  },
+  classification: [
+    { key: "1", name: "Animalia", rank: "KINGDOM" },
+    { key: "44", name: "Chordata", rank: "PHYLUM" },
+    { key: "359", name: "Mammalia", rank: "CLASS" },
+    { key: "732", name: "Carnivora", rank: "ORDER" },
+    { key: "9703", name: "Felidae", rank: "FAMILY" },
+    { key: "2435194", name: "Panthera", rank: "GENUS" },
+    { key: "5219404", name: "Panthera leo", rank: "SPECIES" },
+  ],
+  additionalStatus: [{ status: "VULNERABLE" }],
+});
+
+const mockGbifResponse = (data: GbifSpeciesMatchResponse) => {
   const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-    new Response(JSON.stringify(responseData), {
+    new Response(JSON.stringify(data), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     }),
   );
+
   vi.stubGlobal("fetch", fetchMock);
+
+  return fetchMock;
+};
+
+it("accepts an EXACT match with confidence 95 and returns the mapped species", async () => {
+  // Arrange
+  const responseData = createGbifResponse();
+  mockGbifResponse(responseData);
 
   // Act
   const species = await searchSpecies("Panthera leo");
@@ -52,4 +64,56 @@ it("accepts an EXACT match with confidence 95 and returns the mapped species", a
     ],
     conservationStatus: "VULNERABLE",
   });
+});
+
+it("rejects an EXACT match with confidence below 95", async () => {
+  // Arrange
+  const responseData = createGbifResponse("EXACT", 94);
+  mockGbifResponse(responseData);
+
+  // Act & Assert
+  await expect(searchSpecies("Panthera leo")).rejects.toThrow(
+    NoReliableMatchError,
+  );
+});
+
+it("rejects a non-EXACT match even with high confidence", async () => {
+  // Arrange
+  const responseData = createGbifResponse("FUZZY", 100);
+  mockGbifResponse(responseData);
+
+  // Act & Assert
+  await expect(searchSpecies("Panthera leo")).rejects.toThrow(
+    NoReliableMatchError,
+  );
+});
+
+it("throws an error when GBIF returns HTTP 500", async () => {
+  // Arrange
+  const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+    new Response(null, {
+      status: 500,
+    }),
+  );
+
+  vi.stubGlobal("fetch", fetchMock);
+
+  // Act & Assert
+  await expect(searchSpecies("Panthera leo")).rejects.toThrow(
+    "Response status: 500",
+  );
+});
+
+it("throws an error when there is a network error", async () => {
+  // Arrange
+  const fetchMock = vi
+    .fn<typeof fetch>()
+    .mockRejectedValue(new TypeError("Failed to fetch"));
+
+  vi.stubGlobal("fetch", fetchMock);
+
+  // Act & Assert
+  await expect(searchSpecies("Panthera leo")).rejects.toThrow(
+    "Failed to fetch",
+  );
 });
