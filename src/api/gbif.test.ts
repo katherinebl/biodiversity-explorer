@@ -117,3 +117,67 @@ it("throws an error when there is a network error", async () => {
     "Failed to fetch",
   );
 });
+
+it("returns undefined conservation status when additionalStatus is missing", async () => {
+  // Arrange
+  const responseData = createGbifResponse();
+
+  delete responseData.additionalStatus;
+
+  mockGbifResponse(responseData);
+
+  // Act
+  const species = await searchSpecies("Panthera leo");
+
+  // Assert
+  expect(species.conservationStatus).toBeUndefined();
+});
+
+it("returns undefined conservation status when additionalStatus is empty", async () => {
+  // Arrange
+  const responseData = createGbifResponse();
+
+  responseData.additionalStatus = [];
+
+  mockGbifResponse(responseData);
+
+  // Act
+  const species = await searchSpecies("Panthera leo");
+
+  // Assert
+  expect(species.conservationStatus).toBeUndefined();
+});
+
+it("selects the first conservation status when multiple statuses exist", async () => {
+  // Arrange
+  const responseData = createGbifResponse();
+
+  responseData.additionalStatus = [
+    { status: "VULNERABLE" },
+    { status: "ENDANGERED" },
+    { status: "LEAST_CONCERN" },
+  ];
+
+  mockGbifResponse(responseData);
+
+  // Act
+  const species = await searchSpecies("Panthera leo");
+
+  // Assert
+  expect(species.conservationStatus).toBe("VULNERABLE");
+});
+
+it("encodes the scientific name in the GBIF request URL", async () => {
+  // Arrange
+  const responseData = createGbifResponse();
+  const fetchMock = mockGbifResponse(responseData);
+
+  // Act
+  await searchSpecies("Panthera leo");
+
+  // Assert
+  expect(fetchMock).toHaveBeenCalledWith(
+    "https://api.gbif.org/v2/species/match?scientificName=Panthera%20leo",
+  );
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+});
