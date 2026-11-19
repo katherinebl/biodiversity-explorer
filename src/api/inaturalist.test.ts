@@ -157,3 +157,51 @@ it("handles missing optional common name and Wikipedia URL", async () => {
   expect(species?.commonName).toBeUndefined();
   expect(species?.wikipediaURL).toBeUndefined();
 });
+
+it("throws an error when the iNaturalist API returns HTTP 500", async () => {
+  // Arrange
+  const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+    new Response(null, {
+      status: 500,
+    }),
+  );
+
+  vi.stubGlobal("fetch", fetchMock);
+
+  // Act & Assert
+  await expect(searchTaxon("Panthera leo", "SPECIES")).rejects.toThrow(
+    "Response status: 500",
+  );
+});
+
+it("throws an error when the network request fails", async () => {
+  // Arrange
+  const fetchMock = vi
+    .fn<typeof fetch>()
+    .mockRejectedValue(new TypeError("Failed to fetch"));
+
+  vi.stubGlobal("fetch", fetchMock);
+
+  // Act & Assert
+  await expect(searchTaxon("Panthera leo", "SPECIES")).rejects.toThrow(
+    "Failed to fetch",
+  );
+});
+
+it("builds the correct iNaturalist request URL", async () => {
+  // Arrange
+  const taxon = createINaturalistTaxon();
+
+  const fetchMock = mockINaturalistResponse({
+    results: [taxon],
+  });
+
+  // Act
+  await searchTaxon("Panthera leo", "SPECIES");
+
+  // Assert
+  expect(fetchMock).toHaveBeenCalledWith(
+    "https://api.inaturalist.org/v1/taxa?q=Panthera%20leo&is_active=true&rank=species&order=desc&order_by=observations_count",
+  );
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+});
