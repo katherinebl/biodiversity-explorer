@@ -19,6 +19,11 @@ export async function resolveScientificName(query: string): Promise<string> {
 
   const wikipediaURL = `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}&limit=5`;
   const wikipediaResponse = await fetch(wikipediaURL);
+
+  if (!wikipediaResponse.ok) {
+    throw new Error(`Wikipedia response status: ${wikipediaResponse.status}`);
+  }
+
   const wikipediaData = await wikipediaResponse.json();
   const wikipediaTitle = wikipediaData.pages[0]?.title;
 
@@ -30,6 +35,10 @@ export async function resolveScientificName(query: string): Promise<string> {
 
   const wikidataURL = `https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=${encodeURIComponent(wikipediaTitle)}&props=claims&format=json&origin=*`;
   const wikidataResponse = await fetch(wikidataURL);
+
+  if (!wikidataResponse.ok) {
+    throw new Error(`Wikidata response status: ${wikidataResponse.status}`);
+  }
   const wikidataData: WikidataResponse = await wikidataResponse.json();
 
   const entity = Object.values(wikidataData.entities)[0];
