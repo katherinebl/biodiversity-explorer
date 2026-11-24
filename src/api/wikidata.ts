@@ -17,10 +17,10 @@ export class TaxonIsNotSpeciesError extends Error {
 export async function resolveScientificName(query: string): Promise<string> {
   const SPECIES_RANK_ID = "Q7432";
 
-  const url = `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}&limit=5`;
-  const response = await fetch(url);
-  const data = await response.json();
-  const wikipediaTitle = data.pages[0]?.title;
+  const wikipediaURL = `https://en.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(query)}&limit=5`;
+  const wikipediaResponse = await fetch(wikipediaURL);
+  const wikipediaData = await wikipediaResponse.json();
+  const wikipediaTitle = wikipediaData.pages[0]?.title;
 
   if (!wikipediaTitle) {
     throw new CommonNameNotFoundError(
